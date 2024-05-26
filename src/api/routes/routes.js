@@ -29,7 +29,8 @@ const {
 const {
   participantRegister,
   getParticipants,
-  getParticipantById
+  getParticipantById,
+  getParticipantsByEvent
 } = require("../controllers/participant");
 
 // ------------------ ACORDARSE DE ISAUTH [isAuth] para alguas funcionalidades ----------
@@ -54,6 +55,9 @@ Routes.get("/users", getUsers);
 Routes.get("/user/:id", getUserById);
 Routes.get("/participants", getParticipants);
 Routes.get("/participant/:id", getParticipantById);
+//este muestra al participante por su id
+Routes.get("/participants/event/:id", getParticipantsByEvent);
+//este muestra los participantes por el id del evento al que están apuntados
 
 //ACTUALIZACIONES
 Routes.put("/user/update-user/:id", updateUserById);

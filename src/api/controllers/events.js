@@ -168,7 +168,6 @@ const updateEventById = async (req, res, next) => {
 
 
 
-
 // BORRAR EL EVENTO
 const deleteEventByCreator = async (req, res, next) => {
   try {
