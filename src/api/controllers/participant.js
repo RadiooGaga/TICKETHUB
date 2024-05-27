@@ -1,5 +1,5 @@
 const Participant = require('../models/Participant');
-const Event = require('../models/Event');
+const User = require('../models/User');
 
 
 //REGISTRO DEL PARTICIPANTE
@@ -74,10 +74,26 @@ const getParticipantById = async (req, res, next) => {
 const getParticipantsByEvent = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const participants = await Participant.find({ events: id });
 
-    console.log("esta es la lista de los participantes", participants);
-    res.status(200).json(participants);
+    const participants = await Participant.find({ events: id });
+    const users = await User.find({ myEvents: id });
+
+    if ((!participants || participants.lengh === 0) && (!users || users.lengh === 0) ) {
+      return res.status(404).json({ message: 'No se encontraron asistentes para este evento' });
+    }
+
+    // Creo una lista de asistentes a los eventos genérica.
+    let attendants = [];
+
+    participants.forEach((participant) => {
+      attendants.push(participant.name + " " + participant.surname + " " + "---" + " " + participant.email)
+    })
+    users.forEach((user) => {
+      attendants.push(user.userName + " " + "---"+ " " + user.email)
+    })
+
+    console.log("lista generada", attendants);
+    res.status(200).json({"Asistentes": attendants});
 
   } catch (err) {
       console.error("Error al obtener los participantes del evento",err);
@@ -85,6 +101,8 @@ const getParticipantsByEvent = async (req, res, next) => {
   }
 
 }
+
+
 
 module.exports = { participantRegister, getParticipants, getParticipantById, getParticipantsByEvent };
 

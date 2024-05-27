@@ -96,15 +96,15 @@ const updateUserById = async (req, res, next) => {
       }*/
       const oldUser = await User.findById(id) //buscar el user
       const newUser = new User(req.body); // almacenar como newUser
-      newUser._id = id; 
       //crear nuevo id del usuario nuevo, que es el mismo pero para el nuevo user.
-
-      const myEventsIndex = oldUser.myEvents.indexOf(newUser.myEvents[0]);
+      newUser._id = id; 
+      
       //buscar si había eventos en el oldUser
+      const myEventsIndex = oldUser.myEvents.indexOf(newUser.myEvents[0]);
       console.log('eventos del old user', myEventsIndex);
       
       //para mis eventos
-      if (myEventsIndex === -1) { // si no había eventos en mis eventos...se meten.
+      if (myEventsIndex === -1) { // si el evento no está en mis eventos
         newUser.myEvents = [...oldUser.myEvents, ...newUser.myEvents];
         console.log('evento no encontrado, añadiendo\n', newUser)
       } else {
@@ -113,7 +113,6 @@ const updateUserById = async (req, res, next) => {
         console.log('evento no encontrado, borrando\n', newUser)
       }
 
-      console.log('eventos del new user', newUser.myEvents)
       const userUpdated = await User.findByIdAndUpdate(id, newUser, {
         new: true,
       });

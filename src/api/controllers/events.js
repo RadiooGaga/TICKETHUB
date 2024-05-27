@@ -120,51 +120,58 @@ const createEvent = async (req, res, next) => {
 };
   
 
-
-// ACTUALIZAR EL EVENTO 
+// ACTUALIZAR EL EVENTO
 const updateEventById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const event = req.body;
+    const eventUpdated = req.body;
 
-    // Busco si hay evento
+    // Buscar si hay evento
     const oldEvent = await Event.findById(id);
     if (!oldEvent) {
-        return res.status(404).json({ message: "Evento no encontrado" });
+      return res.status(404).json({ message: "Evento no encontrado" });
     }
 
-    // Y si se ha subido una nueva imagen
-    if (req.body.img) {
-      const imgUrl = req.body.img;
+    // Si se ha subido una nueva imagen
+    if (eventUpdated.img) {
+      const imgUrl = eventUpdated.img;
 
-        // Si hay una imagen vieja, se elimina.
-        if (oldEvent.img) {
-            deleteImgCloudinary(oldEvent.img);
-        }
-            // Se sube la nueva imagen a Cloudinary
-            const result = await cloudinary.uploader.upload(imgUrl, {
-              folder: 'tickethubPictures',
-              allowedFormats: ['jpg', 'png', 'jpeg', 'gif'],
-              overwrite: true,
-              invalidate: true  
-          });
-          event.img = result.url;
+      // Si hay una imagen vieja, se elimina
+      if (oldEvent.img) {
+        deleteImgCloudinary(oldEvent.img);
       }
       
-    // Actualizamos el evento con la nueva información e imagen
-    const updatedEvent = await Event.findByIdAndUpdate(id, event, { new: true }).lean();
-    if (!updatedEvent) {
-        return res.status(404).json({ message: "Evento no encontrado" });
+      // Subir la nueva imagen a Cloudinary
+      const result = await cloudinary.uploader.upload(imgUrl, {
+        folder: 'tickethubPictures',
+        allowedFormats: ['jpg', 'png', 'jpeg', 'gif'],
+        overwrite: true,
+        invalidate: true  
+      });
+      eventUpdated.img = result.url;
     }
-    console.log('El eVENTO se ha actualizado', updatedEvent);
+
+    /* Si hay que actualizar los participantes, combinar existentes con los nuevos,
+     evitando duplicados */
+    if (eventUpdated.participants) {
+      const newParticipantsSet = new Set([...oldEvent.participants, ...eventUpdated.participants]);
+      eventUpdated.participants = Array.from(newParticipantsSet);
+    }
+
+    // Actualizo el evento con la nueva info y la imagen
+    const updatedEvent = await Event.findByIdAndUpdate(id, eventUpdated, { new: true }).lean();
+    if (!updatedEvent) {
+      return res.status(404).json({ message: "Evento no encontrado" });
+    }
+
+    console.log('El evento se ha actualizado', updatedEvent);
     return res.status(200).json(updatedEvent); 
         
-    } catch (error){
-        //return res.status(400).json('Error al actualizar el evento', error) 
-        res.status(500).json({ error: 'Error al actualizar el evento' });
-    }
+  } catch (error) {
+    console.error('Error al actualizar el evento', error);
+    return res.status(500).json({ error: 'Error al actualizar el evento' });
+  }
 };
-
 
 
 
