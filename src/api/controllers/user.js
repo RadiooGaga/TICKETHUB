@@ -16,15 +16,16 @@ const register = async (req, res, next) => {
     });
 
     const userExists = await User.findOne({ userName: req.body.userName, email: req.body.email});
-
     if (userExists) {
       console.log("el nombre e email de usuario ya existe");
-      return res.status(400).json("nombre e email de usuario ya existen");
+      return res.status(401).json("nombre e email de usuario ya existen");
     }
 
-    const userSaved = await newUser.save(); //guardamos nuevo user en db
-    console.log("Usuario registrado con éxito!", newUser);
-    return res.status(200).json({  user: userSaved });
+    const user = await newUser.save(); //guardamos nuevo user en db
+    const token = generateToken(user._id);
+    console.log("Usuario registrado con éxito!", user);
+    return res.status(200).json({ token, user });
+   
 
   } catch (error) {
     console.log("error al hacer el registro", error);
