@@ -4,7 +4,9 @@ const express = require('express');
 const cors = require('cors');
 const cloudinary = require('cloudinary').v2;
 const { connectDB } = require('./src/config/db');
-const Routes = require("./src/api/routes/routes");
+const userRoutes = require("./src/api/routes/userRoutes");
+const eventRoutes = require("./src/api/routes/eventRoutes");
+const participantRoutes = require("./src/api/routes/participantRoutes");
 
 
 const app = express();
@@ -26,7 +28,9 @@ app.use(express.json());
 app.use(cors());
 
 
-app.use('/api', Routes);
+app.use('/api', userRoutes);
+app.use('/api', participantRoutes);
+app.use('/api', eventRoutes);
 
 
 app.use('*', (req, res, next) => {

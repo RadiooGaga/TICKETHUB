@@ -102,7 +102,7 @@ const createEvent = async (req, res, next) => {
       creator: req.body.creator
       
     });
-    
+
     const eventDB = await newEvent.save();
     const eventId = eventDB._id;
 
@@ -113,6 +113,7 @@ const createEvent = async (req, res, next) => {
     
     console.log('Evento creado con éxito!')
     return res.status(201).json({ event: eventDB, message: "evento creado y guardado en la DB!" });
+    
   } catch (error) {
     console.log("error al crear el evento");
     return res.status(400).json(error);

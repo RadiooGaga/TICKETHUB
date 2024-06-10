@@ -34,7 +34,7 @@ const register = async (req, res, next) => {
 };
 
 
-// LOGUIN DE USUARIO
+// LOGIN DE USUARIO
 const login = async (req, res, next) => {
   try {
     const { userName, password } = req.body;
@@ -134,6 +134,7 @@ const deleteUserById = async (req, res, next) => {
     try {
       const { id } = req.params;
       const userToDelete = await User.findByIdAndDelete(id);
+
       if (!userToDelete) {
         console.log("usuario no encontrado");
         return next("usuario no encontrado");
