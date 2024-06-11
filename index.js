@@ -37,6 +37,7 @@ app.use('*', (req, res, next) => {
     return res.status(404).json('Ruta no encontrada');
 })
 
+const PORT = 3004;
 app.listen(3004,() => {
-    console.log("El servidor está funcionando en http://localhost:3004");
+    console.log(`El servidor está funcionando en http://localhost:${PORT}`);
 })

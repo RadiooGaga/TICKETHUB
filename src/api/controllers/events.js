@@ -1,4 +1,4 @@
-const { deleteImgCloudinary } = require('../../middlewares/storeAndDeleteFiles');
+const { deleteImgCloudinary , uploadImage } = require('../../middlewares/storeAndDeleteFiles');
 const cloudinary = require('cloudinary').v2
 const Event = require("../models/Event");
 const User = require("../models/User");
@@ -84,12 +84,7 @@ const getEventsByCategory = async (req, res, next) => {
 const createEvent = async (req, res, next) => {
   try {
     const imgUrl = req.body.img;
-    const result = await cloudinary.uploader.upload(imgUrl, {
-          folder: 'tickethubPictures',
-          allowedFormats: ['jpg', 'png', 'jpeg', 'gif'],
-          overwrite: true,
-          invalidate: true  
-    });
+    const result = await uploadImage(imgUrl);
 
     const newEvent = new Event({
       eventName: req.body.eventName,

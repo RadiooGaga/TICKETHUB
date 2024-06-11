@@ -2,6 +2,20 @@ const multer = require('multer')
 const cloudinary = require('cloudinary').v2
 const { CloudinaryStorage } = require('multer-storage-cloudinary')
 
+//subir la foto
+const uploadImage = async (imgUrl) => {
+  try {
+    const result = await cloudinary.uploader.upload(imgUrl, {
+      folder: 'tickethubPictures',
+      allowedFormats: ['jpg', 'png', 'jpeg', 'gif'],
+      overwrite: true,
+      invalidate: true  
+    });
+    return result;
+  } catch (error) {
+    throw new Error('Error uploading image: ' + error.message);
+  }
+};
 
 
 // Almacenar las fotos en Cloudinary
@@ -15,7 +29,7 @@ const storage = new CloudinaryStorage({
     }
   });
 
-
+// borrarlas de Cloudinary
 const deleteImgCloudinary = (imgUrl) => {
     // Dividir la URL para obtener el public_id
     const imgSplited = imgUrl.split('/');
@@ -34,6 +48,6 @@ const deleteImgCloudinary = (imgUrl) => {
 }
 
 const upload = multer({ storage });
-module.exports = { upload, deleteImgCloudinary }
+module.exports = { upload, uploadImage, deleteImgCloudinary }
 
 
