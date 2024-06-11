@@ -10,12 +10,12 @@ const participantRegister = async (req, res, next) => {
   
     let participantSaved; //se va actualizando
 
-    if (participantExists){ //si el participante existe... 
+    if (participantExists){ 
 
         if (participantExists.events.includes(req.body.events)) { 
-            //y está el evento al que quiere ir...
+            //y si está el evento al que quiere ir...
             console.log("El participante ya existe y está inscrito en el evento");
-            return res.status(400).json("Ese participante ya está inscrito en el evento");
+            return res.status(409).json("Ese participante ya está inscrito en el evento");
 
         } else {
             //si no está el evento, lo añade a su lista de eventos.
@@ -24,13 +24,19 @@ const participantRegister = async (req, res, next) => {
             console.log("El participante ya existe, pero no tiene ese evento (evento añadido)");
             return res.status(200).json(participantSaved);
         }
-    } else { //si no existe el participante, se crea uno nuevo en la db
+    } else { //si no existe, se crea uno nuevo en la db
         const newParticipant = new Participant({
             name: req.body.name,
             surname: req.body.surname,
             email: req.body.email,
             events: req.body.events    
         });
+
+          if (!newParticipant.name || !newParticipant.surname || !newParticipant.email) {
+              console.log("Faltan campos por rellenar");
+              return res.status(400).json("error")
+          }
+
         participantSaved = await newParticipant.save(); //guardamos nuevo participante en db
         console.log("Participante registrado con éxito!", newParticipant);
         return res.status(200).json(participantSaved);
