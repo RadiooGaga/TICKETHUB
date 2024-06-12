@@ -91,10 +91,10 @@ const getUserById = async (req, res, next) => {
 const updateUserById = async (req, res, next) => {
   try {
       const { id } = req.params;
-      /*
+      
       if (req.user._id.toString() !== id) {
         return res.status(400).json("No puedes modificar a alguien que no seas tu mismo")
-      }*/
+      }
       const oldUser = await User.findById(id) //buscar el user
       const newUser = new User(req.body); // almacenar como newUser
       //crear nuevo id del usuario nuevo, que es el mismo pero para el nuevo user.

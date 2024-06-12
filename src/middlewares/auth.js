@@ -37,4 +37,31 @@ const isAdmin = async (req, res, next) => {
     }
 }
 
-module.exports = { isAdmin }
+
+const isAuth = async (req, res, next) => {
+    try {
+        const token = req.headers.authorization;
+
+        if (!token) {
+            return res.status(401).json({ error: "No estás autorizado, no hay token" });
+        }
+
+        const parsedToken = token.replace("Bearer ", "");
+        const { id } = verifyJwt(parsedToken);
+        const user = await User.findById(id);
+
+        if (!user) {
+            return res.status(404).json({ error: "Usuario no encontrado" });
+        }
+
+        // Adjuntar el usuario autenticado a la solicitud
+        user.password = null;
+        req.user = user;
+        next();
+    } catch (error) {
+        console.error("Error en la autenticación:", error);
+        return res.status(401).json({ error: "No estás autorizado" });
+    }
+}
+
+module.exports = { isAdmin, isAuth };
