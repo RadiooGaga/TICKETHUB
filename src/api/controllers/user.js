@@ -131,24 +131,32 @@ const updateUserById = async (req, res, next) => {
 
 //BORRAR USUARIO (ADMIN)
 const deleteUserById = async (req, res, next) => {
-    try {
+  try {
       const { id } = req.params;
-      const userToDelete = await User.findByIdAndDelete(id);
+      const { user } = req;
 
-      if (!userToDelete) {
-        console.log("usuario no encontrado");
-        return next("usuario no encontrado");
+      // Verifica si el usuario autenticado está intentando eliminar su propia cuenta
+      if (user._id.toString() !== id) {
+          return res.status(403).json({ message: "No puedes eliminar una cuenta que no sea la tuya" });
       }
-  
+      const userToDelete = await User.findByIdAndDelete(id);
+   
+      if (!userToDelete) {
+          console.log("Usuario no encontrado");
+          return res.status(404).json({ message: "Usuario no encontrado" });
+      }
+
       return res.status(200).json({
-        message: "¡usuario borrado!",
-        userToDelete,
+          message: "¡Usuario borrado!",
+          userToDelete,
       });
-      
-    } catch (error) {
-      return res.status(400).json("Error al eliminar el usuario", error);
-    }
+    
+  } catch (error) {
+      console.error("Error al eliminar el usuario", error);
+      return res.status(400).json({ message: "Error al eliminar el usuario", error });
+  }
 };
+
 
 
 module.exports = {

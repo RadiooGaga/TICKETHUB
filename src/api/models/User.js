@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema(
     userName:  { type: String, trim: true, required: true, unique: true },
     email: { type: String, trim: true, required: true, unique: true },
     password: { type: String, trim: true, required: true, unique: true },
-    rol: { type: String, required: true, default: "user", enum: ["admin", "user"]},
+    rol: { type: String, required: true, /*default: "user",*/ enum: ["admin", "user"]},
     myEvents: { type: [String], trim: true, required: true },
     createdEvents: { type: [String], trim: true, required: true }
     }, 

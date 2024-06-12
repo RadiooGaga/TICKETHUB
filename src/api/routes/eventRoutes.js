@@ -1,6 +1,6 @@
 
-//const { isUser, isAdmin } = require('../../middlewares/auth');
-const { isAuth } = require("../../middlewares/auth");
+const { isUser, isAdmin } = require('../../middlewares/auth');
+//const { isAuth } = require("../../middlewares/auth");
 const { upload } = require('../../middlewares/storeAndDeleteFiles');
 const eventRoutes = require("express").Router();
 
@@ -18,14 +18,14 @@ const {
 
 
 // RUTAS
-eventRoutes.post("/user/new-event", [isAuth()], createEvent);
+eventRoutes.post("/user/new-event", createEvent);
 eventRoutes.get("/events", getEvents);
 eventRoutes.get("/events/search/:searchTerm", searchEvents);
 eventRoutes.get("/events/:id", getEventById);
 eventRoutes.get("/event/creator/:id", getEventsByCreator); //añadir id del creador
 eventRoutes.get("/events/category/:category", getEventsByCategory);
-eventRoutes.put("/user/update-event/:id", [isAuth()], updateEventById);
-eventRoutes.delete("/user/delete-event/:id", [isAuth()], /*[isAdmin],*/ upload.single('img'), deleteEventByCreator); //eventoId
+eventRoutes.put("/user/update-event/:id",  updateEventById);
+eventRoutes.delete("/user/delete-event/:id",  /*[isAdmin],*/ upload.single('img'), deleteEventByCreator); //eventoId
 
 
 module.exports = eventRoutes;
