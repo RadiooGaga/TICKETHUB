@@ -23,19 +23,20 @@ const participantRegister = async (req, res, next) => {
             participantSaved = await participantExists.save();
             console.log("El participante ya existe, pero no tiene ese evento (evento añadido)");
             return res.status(200).json(participantSaved);
-        }
-    } else { //si no existe, se crea uno nuevo en la db
-        const newParticipant = new Participant({
-            name: req.body.name,
-            surname: req.body.surname,
-            email: req.body.email,
-            events: req.body.events    
-        });
+        } 
 
-          if (!newParticipant.name || !newParticipant.surname || !newParticipant.email) {
+      } else { //si no existe, se crea uno nuevo en la db
+            const newParticipant = new Participant({
+                name: req.body.name,
+                surname: req.body.surname,
+                email: req.body.email,
+                events: req.body.events    
+            });
+
+            if (!newParticipant.name || !newParticipant.surname || !newParticipant.email) {
               console.log("Faltan campos por rellenar");
               return res.status(400).json("error")
-          }
+            }
 
         participantSaved = await newParticipant.save(); //guardamos nuevo participante en db
         console.log("Participante registrado con éxito!", newParticipant);
